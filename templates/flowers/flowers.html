@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flowers</title>
+</head>
+<body>
+    <header style="display: flex; justify-content: space-between">
+        <div style="">
+            <a href="/cart/items">cart</a>
+            <a href="/flowers">flowers</a>
+        </div>
+        <div>
+            <a href="/profile">profile</a>
+            <a href="/login">sign in</a>
+            <a href="/signup">sign up</a>
+        </div>
+    </header>
+    <form action="/flowers" method="post">
+        <label for="Name">Name:</label>
+        <input type="text" name="name" id = "Name">
+        <label for="Count" >Count: </label>
+        <input type="text" name="count" id = "Count">
+        <label for="Cost">Cost: </label>
+        <input type="text" name="cost" id="Cost">
+        <input type="submit" name="Add">
+    </form>
+    <br><br>
+
+    {% for flower in flowers %}
+         <div style="display: flex; width: 200px; justify-content: space-around; " >
+            <p>{{flower.id }}</p>
+            <p>{{flower.name }}</p>
+            <p>{{flower.count }}</p>
+            <p>{{flower.cost}}</p>
+        </div>
+        <form action="/cart/items" method="post">
+            <input type="hidden" name="flower_id" value="{{ flower.id }}">
+            <input type="submit" name="add" value="add to cart">
+        </form>
+    {% endfor %}
+</body>
+</html>
