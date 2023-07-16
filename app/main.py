@@ -133,10 +133,14 @@ def add_carts(
 def get_carts(request: Request):
     cart = request.cookies.get("cart")
     flowers = flowers_repository.get_list(cart)
+    total = 0
+    for i in flowers:
+        total += i.cost
     return templates.TemplateResponse(
         "app/cart.html",
         {
             "request": request,
-            "flowers": flowers
+            "flowers": flowers,
+            "total": total,
         }
     )
