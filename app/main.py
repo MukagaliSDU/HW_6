@@ -109,7 +109,6 @@ def post_flowers(
         count: int = Form(),
         cost: int = Form(),
 ):
-
     flower = Flower(name=name, count=count, cost=cost)
     flowers_repository.save(flower)
     return RedirectResponse("/flowers", status_code=303)
@@ -117,21 +116,26 @@ def post_flowers(
 
 @app.post("/cart/items")
 def add_carts(
+    request: Request,
     flower_id: int = Form(),
-    cart: str = Cookie(default="[]"),
+    token: str = Cookie(),
+    cart: str = Cookie(default='[]')
 ):
-    cart_json = json.loads(cart)
     response = RedirectResponse("/flowers", status_code=303)
+    cart_token = request.cookies.get(token)
+    if cart_token is None:
+        cart_token = cart
+    cart_json = json.loads(cart_token)
     if flower_id != None:
         cart_json.append(flower_id)
         new_cart = json.dumps(cart_json)
-        response.set_cookie(key='cart', value=new_cart)
+        response.set_cookie(key=token, value=new_cart)
     return response
 
 
 @app.get("/cart/items")
-def get_carts(request: Request):
-    cart = request.cookies.get("cart")
+def get_carts(request: Request, token: str = Cookie()):
+    cart = request.cookies.get(token)
     flowers = flowers_repository.get_list(cart)
     total = 0
     for i in flowers:
